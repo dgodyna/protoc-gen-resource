@@ -27,7 +27,7 @@ type Parser struct {
 	// IncludeSourceInfo will create descriptors that include information about the original location of each decl in the source file
 	// as well as surrounding comments.
 	// If set to true --include_source_info protoc argument will be added.
-	IncludeSourceInfo bool //--include_source_info
+	IncludeSourceInfo bool
 
 	// Path to protoc compiler. If not set up - will be searched in PATH.
 	Protoc string
@@ -55,7 +55,7 @@ func (p Parser) protocCommand(filesToGenerate ...string) (*exec.Cmd, error) {
 	}
 
 	if len(p.DescriptorsSet) != 0 {
-		args = append(args, fmt.Sprintf("--descriptor_set_in=%s", strings.Join(p.ProtoPaths, ",")))
+		args = append(args, fmt.Sprintf("--descriptor_set_in=%s", strings.Join(p.DescriptorsSet, ",")))
 	}
 
 	if p.IncludeImports {

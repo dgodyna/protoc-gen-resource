@@ -1,13 +1,17 @@
 package protoc
 
 import (
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/assert"
-	"gotest.tools/assert/cmp"
+	"os"
 	"os/exec"
 	"testing"
 )
 
 func TestParser_protocCommand(t *testing.T) {
+	protocPath, err := exec.LookPath("protoc")
+	assert.NilError(t, err)
+
 	type fields struct {
 		ProtoPaths        []string
 		DescriptorsSet    []string
@@ -27,59 +31,72 @@ func TestParser_protocCommand(t *testing.T) {
 		wantErr        bool
 	}{
 		{
-			name:    "Protoc from path",
-			fields:  fields{},
-			args:    args{},
-			want:    exec.Command("protoc"),
-			wantErr: false,
+			name: "Protoc from path",
+			want: exec.Command(protocPath),
 		},
 		{
-			name:           "Configured protoc",
-			fields:         fields{},
-			customizedPath: "",
-			args:           args{},
-			want:           nil,
-			wantErr:        false,
+			name: "Configured protoc",
+			fields: fields{
+				Protoc: "/test/protoc",
+			},
+			customizedPath: "/t",
+			want:           exec.Command("/test/protoc"),
 		},
 		{
-			name:           "ProtoPaths",
-			fields:         fields{},
-			customizedPath: "",
-			args:           args{},
-			want:           nil,
-			wantErr:        false,
+			name:           "Non-existing protoc",
+			customizedPath: "/test",
+			wantErr:        true,
 		},
 		{
-			name:           "DescriptorsSet",
-			fields:         fields{},
-			customizedPath: "",
-			args:           args{},
-			want:           nil,
-			wantErr:        false,
+			name: "ProtoPaths",
+			fields: fields{
+				ProtoPaths: []string{"dir1/subdir", "dir2", "dir3"},
+				Protoc:     "/test/protoc",
+			},
+			want: exec.Command("/test/protoc", "-Idir1/subdir", "-Idir2", "-Idir3"),
 		},
 		{
-			name:           "IncludeImports",
-			fields:         fields{},
-			customizedPath: "",
-			args:           args{},
-			want:           nil,
-			wantErr:        false,
+			name: "DescriptorsSet",
+			fields: fields{
+				DescriptorsSet: []string{"dir1/subdir", "dir2", "dir3"},
+				Protoc:         "/test/protoc",
+			},
+			want: exec.Command("/test/protoc", "--descriptor_set_in=dir1/subdir,dir2,dir3"),
 		},
 		{
-			name:           "IncludeSourceInfo",
-			fields:         fields{},
-			customizedPath: "",
-			args:           args{},
-			want:           nil,
-			wantErr:        false,
+			name: "IncludeImports",
+			fields: fields{
+				IncludeImports: true,
+				Protoc:         "/test/protoc",
+			},
+			want: exec.Command("/test/protoc", "--include_imports"),
 		},
 		{
-			name:           "A bit of everything",
-			fields:         fields{},
-			customizedPath: "",
-			args:           args{},
-			want:           nil,
-			wantErr:        false,
+			name: "IncludeSourceInfo",
+			fields: fields{
+				IncludeSourceInfo: true,
+				Protoc:            "/test/protoc",
+			},
+			want: exec.Command("/test/protoc", "--include_source_info"),
+		},
+		{
+			name: "Params",
+			fields: fields{
+				Protoc: "/test/protoc",
+			},
+			args: args{filesToGenerate: []string{"file1.proto", "file2.proto", "file3.proto"}},
+			want: exec.Command("/test/protoc", "file1.proto", "file2.proto", "file3.proto"),
+		},
+		{
+			name: "A bit of everything",
+			fields: fields{
+				ProtoPaths:        []string{"dir1/subdir", "dir2", "dir3"},
+				IncludeImports:    true,
+				IncludeSourceInfo: true,
+				Protoc:            "/test/protoc",
+			},
+			args: args{filesToGenerate: []string{"file1.proto", "file2.proto", "file3.proto"}},
+			want: exec.Command("/test/protoc", "-Idir1/subdir", "-Idir2", "-Idir3", "--include_imports", "--include_source_info", "file1.proto", "file2.proto", "file3.proto"),
 		},
 	}
 
@@ -88,6 +105,16 @@ func TestParser_protocCommand(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.customizedPath != "" {
+				path := os.Getenv("PATH")
+				err := os.Setenv("PATH", tt.customizedPath)
+				assert.NilError(t, err)
+				defer func() {
+					err := os.Setenv("PATH", path)
+					assert.NilError(t, err)
+				}()
+			}
+
 			p := Parser{
 				ProtoPaths:        tt.fields.ProtoPaths,
 				DescriptorsSet:    tt.fields.DescriptorsSet,
@@ -100,7 +127,7 @@ func TestParser_protocCommand(t *testing.T) {
 				t.Errorf("protocCommand() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			assert.Assert(t, cmp.Equal(tt.want, got))
+			assert.DeepEqual(t, tt.want, got, cmpopts.IgnoreUnexported(exec.Cmd{}))
 		})
 	}
 }
