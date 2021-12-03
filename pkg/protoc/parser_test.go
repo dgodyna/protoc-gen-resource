@@ -15,6 +15,7 @@ func TestParser_protocCommand(t *testing.T) {
 	type fields struct {
 		ProtoPaths        []string
 		DescriptorsSet    []string
+		DescriptorsSetOut string
 		IncludeImports    bool
 		IncludeSourceInfo bool
 		Protoc            string
@@ -80,6 +81,14 @@ func TestParser_protocCommand(t *testing.T) {
 			want: exec.Command("/test/protoc", "--include_source_info"),
 		},
 		{
+			name: "descriptor_set_out",
+			fields: fields{
+				DescriptorsSetOut: "test_out",
+				Protoc:            "/test/protoc",
+			},
+			want: exec.Command("/test/protoc", "--descriptor_set_out=test_out"),
+		},
+		{
 			name: "Params",
 			fields: fields{
 				Protoc: "/test/protoc",
@@ -121,6 +130,7 @@ func TestParser_protocCommand(t *testing.T) {
 				IncludeImports:    tt.fields.IncludeImports,
 				IncludeSourceInfo: tt.fields.IncludeSourceInfo,
 				Protoc:            tt.fields.Protoc,
+				DescriptorsSetOut: tt.fields.DescriptorsSetOut,
 			}
 			got, err := p.protocCommand(tt.args.filesToGenerate...)
 			if (err != nil) != tt.wantErr {

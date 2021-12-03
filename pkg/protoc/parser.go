@@ -1,7 +1,13 @@
 package protoc
 
 import (
+	"errors"
 	"fmt"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
+	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -31,10 +37,75 @@ type Parser struct {
 
 	// Path to protoc compiler. If not set up - will be searched in PATH.
 	Protoc string
+
+	// DescriptorsSetOut holds filepath where to store generated proto descriptor. descriptor_set_out
+	DescriptorsSetOut string
 }
 
-func (p *Parser) CodeGenerationRequest(filesToGenerate ...string) {
+// TODO test that
+// CodeGenerationRequest will return pluginpb.CodeGeneratorRequest for provided files.
+func (p Parser) CodeGenerationRequest(filesToGenerate ...string) (*pluginpb.CodeGeneratorRequest, error) {
 
+	if p.DescriptorsSetOut != "" {
+		if _, err := os.Stat(p.DescriptorsSetOut); err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				// create file
+				f, err := os.Create(p.DescriptorsSetOut)
+				if err != nil {
+					return nil, fmt.Errorf("unable to create discriptors out file '%s' : %w", p.DescriptorsSetOut, err)
+				}
+				cerr := f.Close()
+				if cerr != nil {
+					return nil, fmt.Errorf("unable to close descriptors out file '%s' : %w", p.DescriptorsSetOut, cerr)
+				}
+			} else {
+				return nil, fmt.Errorf("unable to stat descriptors out file '%s' : %w", p.DescriptorsSetOut, err)
+			}
+		}
+	} else {
+		f, err := ioutil.TempFile("", "*.pb")
+		if err != nil {
+			// store descriptor into the temp file
+			return nil, fmt.Errorf("cannot create descriptors out temp file: %w", err)
+		}
+		p.DescriptorsSetOut = f.Name()
+		err = f.Close()
+		if err != nil {
+			return nil, fmt.Errorf("error during close descriptors out temp file '%s' : %w", p.DescriptorsSetOut, err)
+		}
+	}
+
+	cmd, err := p.protocCommand(filesToGenerate...)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create prtoc command : %w", err)
+	}
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, fmt.Errorf("cannot start protoc: %w (%s)", err, string(out))
+	}
+
+	// Let's read got inside a file
+	data, err := ioutil.ReadFile(p.DescriptorsSetOut)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read protoc output file '%s' : %w", p.DescriptorsSetOut, err)
+	}
+
+	// Conversion to *protogen.File
+	res := &descriptorpb.FileDescriptorSet{}
+	err = proto.Unmarshal(data, res)
+	if err != nil {
+		return nil, fmt.Errorf("cannot unmarshal protoc output file: %w", err)
+	}
+
+	req := &pluginpb.CodeGeneratorRequest{
+		FileToGenerate: filesToGenerate,
+		// nil case we didn't specify any plugins here
+		Parameter: nil,
+		ProtoFile: res.File,
+	}
+
+	return req, nil
 }
 
 // protocCommand create protoc command for provided files
@@ -66,8 +137,14 @@ func (p Parser) protocCommand(filesToGenerate ...string) (*exec.Cmd, error) {
 		args = append(args, "--include_source_info")
 	}
 
+	if p.DescriptorsSetOut != "" {
+		args = append(args, fmt.Sprintf("--descriptor_set_out=%s", p.DescriptorsSetOut))
+
+	}
+
 	args = append(args, filesToGenerate...)
 
 	c := exec.Command(p.Protoc, args...)
+
 	return c, nil
 }
