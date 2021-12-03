@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/dgodyna/protoc-gen-deepcopy/pkg/deepcopy"
 	"github.com/dgodyna/protoc-gen-deepcopy/pkg/protoc"
+	"github.com/dgodyna/protoc-gen-deepcopy/pkg/resource"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 	"io"
@@ -26,7 +26,7 @@ func generate() *pluginpb.CodeGeneratorResponse {
 		}
 	}
 
-	return protoc.ApplyPluginFunction(deepcopy.Generate, req)
+	return protoc.ApplyPluginFunction(resource.Generate, req)
 }
 
 // writeResponse marshall response and write it to stdout

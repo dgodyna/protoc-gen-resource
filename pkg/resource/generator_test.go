@@ -1,4 +1,4 @@
-package deepcopy
+package resource
 
 import (
 	"github.com/dgodyna/protoc-gen-deepcopy/pkg/protoc"
