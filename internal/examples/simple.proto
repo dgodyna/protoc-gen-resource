@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package com.netcracker.nrm.api.test.hub.model;
 
-option go_package = "github.com/dgodyna/protoc-gen-deepcopy/pkg/deepcopy/testdata/protos";
+option go_package = "github.com/dgodyna/protoc-gen-deepcopy/pkg/internal/examples";
 
 
 // available scalar types

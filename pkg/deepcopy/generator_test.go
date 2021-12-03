@@ -29,7 +29,7 @@ func TestGenerate(t *testing.T) {
 				fileToGenerate: "simple.proto",
 				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
-			wantFilePath: filepath.Join("testdata", "etalons", "simple.pb.deepcopy.go"),
+			wantFilePath: filepath.Join("testdata", "etalons", "simple.pb.deepcopy.go.etalone"),
 		},
 	}
 	for _, tt := range tests {
@@ -52,7 +52,9 @@ func TestGenerate(t *testing.T) {
 			}
 
 			resp := gen.Response()
-			resp.File[0].Name = nil
+			if len(resp.File) > 0 {
+				resp.File[0].Name = nil
+			}
 
 			response := loadResponse(t, tt.args.fileToGenerate, tt.wantFilePath)
 

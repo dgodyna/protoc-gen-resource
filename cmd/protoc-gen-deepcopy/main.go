@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/dgodyna/protoc-gen-deepcopy/pkg/deepcopy"
 	"github.com/dgodyna/protoc-gen-deepcopy/pkg/protoc"
-	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 	"io"
@@ -18,10 +18,6 @@ func main() {
 	}
 }
 
-func generateFile(gen *protogen.Plugin, filePath string) error {
-	return nil
-}
-
 func generate() *pluginpb.CodeGeneratorResponse {
 	req, err := parseProtocRequest()
 	if err != nil {
@@ -30,7 +26,7 @@ func generate() *pluginpb.CodeGeneratorResponse {
 		}
 	}
 
-	return protoc.ApplyPluginFunction(generateFile, req)
+	return protoc.ApplyPluginFunction(deepcopy.Generate, req)
 }
 
 // writeResponse marshall response and write it to stdout
