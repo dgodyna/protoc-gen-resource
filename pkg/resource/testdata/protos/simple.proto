@@ -2,10 +2,13 @@ syntax = "proto3";
 
 package com.netcracker.nrm.api.test.hub.model;
 
-option go_package = "github.com/dgodyna/protoc-gen-deepcopy/pkg/deepcopy/testdata/protos";
+option go_package = "github.com/dgodyna/protoc-gen-resource/pkg/deepcopy/testdata/protos";
 
 
 // available scalar types
+//
+// comment line1
+// comment line2
 message ABitOfScalars {
     double double_type = 1;
     float float_type = 2;

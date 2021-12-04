@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"github.com/dgodyna/protoc-gen-deepcopy/pkg/protoc"
+	"github.com/dgodyna/protoc-gen-resource/pkg/protoc"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"

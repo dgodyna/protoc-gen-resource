@@ -1,4 +1,4 @@
-module github.com/dgodyna/protoc-gen-deepcopy
+module github.com/dgodyna/protoc-gen-resource
 
 go 1.17
 

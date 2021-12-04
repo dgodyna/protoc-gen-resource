@@ -1,0 +1,26 @@
+
+func (*{{ .type }}) GetResourceGroup() string {
+    return "{{ .group }}"
+}
+
+// API Version, equals to "{{ .Version }}"
+func (*{{ .type }}) GetResourceVersion() string {
+    return "{{ .version }}"
+}
+
+// Resource Kind, equals to "{{ .Kind }}"
+func (*{{ .type }}) GetResourceKind() string {
+    return "{{ .kind }}"
+}
+{{end}}
+
+// GetObjectKind to satisfy runtime.Object interface
+func (x *{{ .type }}) GetObjectKind() schema.ObjectKind {
+	typeMeta := meta.TypeMeta{}
+	typeMeta.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "{{ .group }}",
+		Version: "{{ .version }}",
+		Kind:    "{{ .kind }}",
+	})
+	return &typeMeta
+}

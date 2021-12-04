@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/dgodyna/protoc-gen-deepcopy/pkg/protoc"
-	"github.com/dgodyna/protoc-gen-deepcopy/pkg/resource"
+	"github.com/dgodyna/protoc-gen-resource/pkg/protoc"
+	"github.com/dgodyna/protoc-gen-resource/pkg/resource"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 	"io"
