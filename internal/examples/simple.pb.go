@@ -9,7 +9,6 @@ package examples
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	reflect "reflect"
 	sync "sync"
 )
@@ -42,10 +41,6 @@ type ABitOfScalars struct {
 	BoolType     bool    `protobuf:"varint,13,opt,name=bool_type,json=boolType,proto3" json:"bool_type,omitempty"`
 	StringType   string  `protobuf:"bytes,14,opt,name=string_type,json=stringType,proto3" json:"string_type,omitempty"`
 	BytesType    []byte  `protobuf:"bytes,15,opt,name=bytes_type,json=bytesType,proto3" json:"bytes_type,omitempty"`
-}
-
-func (in *ABitOfScalars) GetObjectKind() schema.ObjectKind {
-	panic("implement me")
 }
 
 func (x *ABitOfScalars) Reset() {
