@@ -76,3 +76,41 @@ func extractFromComments(m *protogen.Message) (*gvk, bool, error) {
 		Kind:    kind,
 	}, true, nil
 }
+
+// extractFromPackage will try to extract group, version, kind from protobuf package.
+// Package must match following patterns <GROUP>.<VERSION> or <GROUP>.<VERSION>.[services|model
+// Where version must be either 'hub' - for internal version or follow v.* pattern.
+// Group will be reversed:
+// com.mycompany.product1.api -> api.product1.mycompany.com
+// If package is not following patterns - return false.
+func extractFromPackage(f *protogen.File, m *protogen.Message) (*gvk, bool) {
+
+	p := *f.Proto.Package
+
+	p = strings.TrimSuffix(p, ".model")
+	p = strings.TrimSuffix(p, ".services")
+
+	packageParts := strings.Split(p, ".")
+
+	if len(packageParts) < 2 {
+		// does not follow proposed format
+		return nil, false
+	}
+
+	version := packageParts[len(packageParts)-1]
+	// checks version
+	if version != "hub" && !strings.HasPrefix(version, "v") {
+		return nil, false
+	}
+
+	// reverse package parts
+	for i, j := 0, len(packageParts)-1; i < j; i, j = i+1, j-1 {
+		packageParts[i], packageParts[j] = packageParts[j], packageParts[i]
+	}
+
+	return &gvk{
+		Group:   strings.Join(packageParts[1:], "."),
+		Version: version,
+		Kind:    m.GoIdent.GoName,
+	}, true
+}
