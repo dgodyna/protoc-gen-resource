@@ -41,6 +41,10 @@ func Generate(gen *protogen.Plugin, filePath string) error {
 
 	sw.Do(packageTmpl, generator.Args{"package": file.GoPackageName})
 	for _, m := range messages {
+		err := genGvk(file, m, sw)
+		if err != nil {
+			return fmt.Errorf("unable to generate GVK for message '%s' : %w", m.GoIdent.GoName, err)
+		}
 		deepCopyMessage(m, sw)
 		deepCopyInto(m, sw)
 		deepCopyObject(m, sw)

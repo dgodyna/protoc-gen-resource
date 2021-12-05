@@ -3,6 +3,7 @@ package resource
 import (
 	_ "embed"
 	"fmt"
+	"github.com/dgodyna/protoc-gen-resource/pkg/generator"
 	"google.golang.org/protobuf/compiler/protogen"
 	"strings"
 )
@@ -16,11 +17,34 @@ type gvk struct {
 	Kind    string
 }
 
-// getGVK get group version & kind of resource from proto message.
-func getGVK(m *protogen.Message) (*gvk, error) {
+// genGvk get group version & kind of resource from proto message and generate appropriate resource methods.
+func genGvk(f *protogen.File, m *protogen.Message, sw *generator.SnippetWriter) error {
+	// firstly try to load from comments
 
-	//m.Comments
-	return nil, nil
+	var res *gvk
+	var found bool
+	var err error
+
+	res, found, err = extractFromComments(m)
+	if err != nil {
+		return err
+	}
+
+	if !found {
+		res, found = extractFromPackage(f, m)
+		if !found {
+			return fmt.Errorf("unable to generate GVK resource methods for message '%s' to generate them either add appropriate comments '+protoc-gen-resource:group=GROUP' "+
+				" '+protoc-gen-resource:version=VERSION', '+protoc-gen-resource:kind=KIND' or follow this package naming format <GROUP>.<VERSION> or "+
+				"<GROUP>.<VERSION>.[model|services] where <VERSION> must be 'hub' or follow v.* pattern", m.GoIdent.GoName)
+		}
+	}
+
+	sw.Do(gvkTmpl, generator.Args{
+		"gvk":  res,
+		"type": m.GoIdent.GoName,
+	})
+
+	return nil
 }
 
 // extractFromComments will extract group version kind information from protobuf message comments.

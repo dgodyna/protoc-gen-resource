@@ -1,26 +1,25 @@
 
 func (*{{ .type }}) GetResourceGroup() string {
-    return "{{ .group }}"
+    return "{{ .gvk.Group }}"
 }
 
-// API Version, equals to "{{ .Version }}"
+// API Version, equals to "{{ .gvk.Version }}"
 func (*{{ .type }}) GetResourceVersion() string {
-    return "{{ .version }}"
+    return "{{ .gvk.Version }}"
 }
 
-// Resource Kind, equals to "{{ .Kind }}"
+// Resource Kind, equals to "{{ .gvk.Kind }}"
 func (*{{ .type }}) GetResourceKind() string {
-    return "{{ .kind }}"
+    return "{{ .gvk.Kind }}"
 }
-{{end}}
 
 // GetObjectKind to satisfy runtime.Object interface
 func (x *{{ .type }}) GetObjectKind() schema.ObjectKind {
 	typeMeta := meta.TypeMeta{}
 	typeMeta.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "{{ .group }}",
-		Version: "{{ .version }}",
-		Kind:    "{{ .kind }}",
+		Group:   "{{ .gvk.Group }}",
+		Version: "{{ .gvk.Version }}",
+		Kind:    "{{ .gvk.Kind }}",
 	})
 	return &typeMeta
 }
