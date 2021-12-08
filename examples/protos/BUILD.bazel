@@ -1,3 +1,6 @@
+# gazelle:go_proto_compilers @io_bazel_rules_go//proto:go_proto, //cmd/protoc-gen-resource:protoc-gen-resource_compiler
+
+
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
@@ -10,6 +13,9 @@ proto_library(
 
 go_proto_library(
     name = "protos_go_proto",
+    compilers = [
+        "@io_bazel_rules_go//proto:go_proto",
+                 "//cmd/protoc-gen-resource:protoc-gen-resource_compiler"],
     importpath = "github.com/dgodyna/protoc-gen-resource/examples/protos",
     proto = ":protos_proto",
     visibility = ["//visibility:public"],

@@ -23,7 +23,7 @@ func Generate(gen *protogen.Plugin, filePath string) error {
 	}
 
 	genFile := gen.NewGeneratedFile(
-		file.GeneratedFilenamePrefix+".pb.deepcopy.go",
+		file.GeneratedFilenamePrefix+".deepcopy.pb.go",
 		file.GoImportPath,
 	)
 

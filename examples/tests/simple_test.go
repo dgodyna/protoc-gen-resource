@@ -7,6 +7,6 @@ import (
 )
 
 func TestSimple(t *testing.T) {
-	var s protos.ABitOfScalars
-	fmt.Println(s)
+	s := &protos.ABitOfScalars{}
+	fmt.Println(s.GetResourceGroup())
 }

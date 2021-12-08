@@ -24,10 +24,10 @@ go_binary(
 #   https://github.com/bazelbuild/rules_go/blob/master/proto/core.rst#go_proto_compiler
 go_proto_compiler(
     name = "protoc-gen-resource_compiler",
-    # Command-line options that are passed to the plugin.
     plugin = ":protoc-gen-resource",
     valid_archive = True,
     visibility = ["//visibility:public"],
     deps = [
     ],
+    suffix = ".deepcopy.pb.go",
 )
