@@ -26,7 +26,7 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Simple Types",
 			args: args{
-				fileToGenerate: "simple.proto",
+				fileToGenerate: "simple.proto_",
 				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "simple.pb.deepcopy.go.etalone"),

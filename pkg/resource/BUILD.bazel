@@ -28,8 +28,11 @@ go_test(
         "generator_test.go",
         "gvk_test.go",
     ],
+    data = [
+        "testdata/etalons/simple.pb.deepcopy.go.etalone",
+        "testdata/protos/simple.proto_",
+    ],
     embed = [":resource"],
-    data = ["testdata/etalons/simple.pb.deepcopy.go.etalone", "testdata/protos/simple.proto"],
     deps = [
         "//pkg/protoc",
         "@org_golang_google_protobuf//compiler/protogen",
