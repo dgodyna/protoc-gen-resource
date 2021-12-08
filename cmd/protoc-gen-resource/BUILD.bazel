@@ -1,4 +1,5 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_go//proto:compiler.bzl", "go_proto_compiler")
 
 go_library(
     name = "protoc-gen-resource_lib",
@@ -8,8 +9,8 @@ go_library(
     deps = [
         "//pkg/protoc",
         "//pkg/resource",
-        "@org_golang_google_protobuf//proto:go_default_library",
-        "@org_golang_google_protobuf//types/pluginpb:go_default_library",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//types/pluginpb",
     ],
 )
 
@@ -17,4 +18,16 @@ go_binary(
     name = "protoc-gen-resource",
     embed = [":protoc-gen-resource_lib"],
     visibility = ["//visibility:public"],
+)
+
+# Ref:
+#   https://github.com/bazelbuild/rules_go/blob/master/proto/core.rst#go_proto_compiler
+go_proto_compiler(
+    name = "protoc-gen-resource_compiler",
+    # Command-line options that are passed to the plugin.
+    plugin = ":protoc-gen-resource",
+    valid_archive = True,
+    visibility = ["//visibility:public"],
+    deps = [
+    ],
 )

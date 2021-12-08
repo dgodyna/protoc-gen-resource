@@ -50,7 +50,7 @@ Line5
 Test Message
 Line 1
 +protoc-gen-resource:group=TEST
-Line 3
+Line 31
 
 Line5
 `,

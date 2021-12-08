@@ -18,7 +18,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/generator",
-        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
+        "@org_golang_google_protobuf//compiler/protogen",
     ],
 )
 
@@ -29,13 +29,14 @@ go_test(
         "gvk_test.go",
     ],
     embed = [":resource"],
+    data = ["testdata/etalons/simple.pb.deepcopy.go.etalone", "testdata/protos/simple.proto"],
     deps = [
         "//pkg/protoc",
-        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
-        "@org_golang_google_protobuf//proto:go_default_library",
-        "@org_golang_google_protobuf//testing/protocmp:go_default_library",
-        "@org_golang_google_protobuf//types/descriptorpb:go_default_library",
-        "@org_golang_google_protobuf//types/pluginpb:go_default_library",
-        "@tools_gotest//assert:go_default_library",
+        "@org_golang_google_protobuf//compiler/protogen",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//testing/protocmp",
+        "@org_golang_google_protobuf//types/descriptorpb",
+        "@org_golang_google_protobuf//types/pluginpb",
+        "@tools_gotest//assert",
     ],
 )

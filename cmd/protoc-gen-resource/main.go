@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	panic("hhhhh")
 	resp := generate()
 	err := writeResponse(resp)
 	if err != nil {
