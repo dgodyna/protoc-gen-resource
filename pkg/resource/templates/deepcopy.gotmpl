@@ -9,6 +9,10 @@ func (in *{{.type}}) DeepCopyInto(out *{{.type}}) {
 	{{ . }} := *in.{{ . }}
     out.{{ . }} = &{{ . }}
 	{{- end }}
+
+	{{- range .enumTypes }}
+	out.{{ . }} = in.{{ . }}
+	{{- end }}
 	return
 }
 
