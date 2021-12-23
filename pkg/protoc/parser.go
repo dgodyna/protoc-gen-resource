@@ -148,3 +148,29 @@ func (p Parser) protocCommand(filesToGenerate ...string) (*exec.Cmd, error) {
 
 	return c, nil
 }
+
+// ReadCodeGenerationRequest will create CodeGeneratorRequest from provided descriptor set.
+// It'll not use protoc command to generate it.
+func ReadCodeGenerationRequest(descriptor string, filesToGenerate ...string) (*pluginpb.CodeGeneratorRequest, error) {
+	// Let's read got inside a file
+	data, err := ioutil.ReadFile(descriptor)
+	if err != nil {
+		return nil, fmt.Errorf("cannot protoc file descriptor '%s' : %w", descriptor, err)
+	}
+
+	// Conversion to *protogen.File
+	res := &descriptorpb.FileDescriptorSet{}
+	err = proto.Unmarshal(data, res)
+	if err != nil {
+		return nil, fmt.Errorf("cannot unmarshal protoc output file: %w", err)
+	}
+
+	req := &pluginpb.CodeGeneratorRequest{
+		FileToGenerate: filesToGenerate,
+		// nil case we didn't specify any plugins here
+		Parameter: nil,
+		ProtoFile: res.File,
+	}
+
+	return req, nil
+}

@@ -14,8 +14,8 @@ import (
 
 func TestGenerate(t *testing.T) {
 	type args struct {
+		descriptorPath string
 		fileToGenerate string
-		filePath       []string
 	}
 	tests := []struct {
 		name         string
@@ -26,24 +26,24 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Simple Types",
 			args: args{
+				descriptorPath: filepath.Join("testdata", "descriptors", "simple.descriptor"),
 				fileToGenerate: "simple.proto",
-				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "simple.pb.deepcopy.go.etalone"),
 		},
 		{
 			name: "Optionals",
 			args: args{
+				descriptorPath: filepath.Join("testdata", "descriptors", "optionals.descriptor"),
 				fileToGenerate: "optionals.proto",
-				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "optionals.pb.deepcopy.go.etalone"),
 		},
 		{
 			name: "Enums",
 			args: args{
+				descriptorPath: filepath.Join("testdata", "descriptors", "enums.descriptor"),
 				fileToGenerate: "enums.proto",
-				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "enums.pb.deepcopy.go.etalone"),
 		},
@@ -51,11 +51,8 @@ func TestGenerate(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			req, err := protoc.Parser{
-				ProtoPaths:        tt.args.filePath,
-				IncludeImports:    true,
-				IncludeSourceInfo: true,
-			}.CodeGenerationRequest(tt.args.fileToGenerate)
+
+			req, err := protoc.ReadCodeGenerationRequest(tt.args.descriptorPath, tt.args.fileToGenerate)
 
 			assert.Assert(t, req != nil)
 			assert.NilError(t, err, "unable to create code generation request")
