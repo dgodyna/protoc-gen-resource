@@ -26,7 +26,7 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Simple Types",
 			args: args{
-				fileToGenerate: "simple.proto_",
+				fileToGenerate: "simple.proto",
 				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "simple.pb.deepcopy.go.etalone"),
@@ -34,7 +34,7 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Optionals",
 			args: args{
-				fileToGenerate: "optionals.proto_",
+				fileToGenerate: "optionals.proto",
 				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "optionals.pb.deepcopy.go.etalone"),

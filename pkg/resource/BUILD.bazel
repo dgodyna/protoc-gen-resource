@@ -1,3 +1,4 @@
+# gazelle:proto disable
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
@@ -29,12 +30,7 @@ go_test(
         "generator_test.go",
         "gvk_test.go",
     ],
-    data = [
-        "testdata/etalons/optionals.pb.deepcopy.go.etalone",
-        "testdata/etalons/simple.pb.deepcopy.go.etalone",
-        "testdata/protos/optionals.proto_",
-        "testdata/protos/simple.proto_",
-    ],
+    data = glob(["testdata/**"]),
     embed = [":resource"],
     deps = [
         "//pkg/protoc",
