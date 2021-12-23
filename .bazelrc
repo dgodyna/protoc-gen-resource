@@ -1,0 +1,2 @@
+# uncomment to enable debug
+# build --@io_bazel_rules_go//go/config:debug
