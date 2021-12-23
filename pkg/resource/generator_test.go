@@ -26,7 +26,7 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Simple Types",
 			args: args{
-				fileToGenerate: "simple.proto_",
+				fileToGenerate: "simple.proto",
 				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "simple.pb.deepcopy.go.etalone"),
@@ -34,10 +34,18 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Optionals",
 			args: args{
-				fileToGenerate: "optionals.proto_",
+				fileToGenerate: "optionals.proto",
 				filePath:       []string{filepath.Join("testdata", "protos")},
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "optionals.pb.deepcopy.go.etalone"),
+		},
+		{
+			name: "Enums",
+			args: args{
+				fileToGenerate: "enums.proto",
+				filePath:       []string{filepath.Join("testdata", "protos")},
+			},
+			wantFilePath: filepath.Join("testdata", "etalons", "enums.pb.deepcopy.go.etalone"),
 		},
 	}
 	for _, tt := range tests {
@@ -49,6 +57,7 @@ func TestGenerate(t *testing.T) {
 				IncludeSourceInfo: true,
 			}.CodeGenerationRequest(tt.args.fileToGenerate)
 
+			assert.Assert(t, req != nil)
 			assert.NilError(t, err, "unable to create code generation request")
 
 			gen, err := protogen.Options{}.New(req)

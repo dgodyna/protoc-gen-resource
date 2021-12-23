@@ -126,3 +126,20 @@ func TestOptionalsDeepcopy(t *testing.T) {
 	assert.Equal(t, "the answer to life the universe and everything", *doppelganger.StringType)
 	assert.Equal(t, "the answer", string(doppelganger.BytesType))
 }
+
+func TestEnumsDeepcopy(t *testing.T) {
+
+	original := &protos.ABitOfEnums{
+		EngineType:  protos.ABitOfEnums_ENGINE_TYPE_GAS,
+		VehicleType: protos.VehicleType_VEHICLE_TYPE_CAR,
+	}
+	// check deepcopy itself
+	doppelganger := original.DeepCopy()
+	assert.Equal(t, original, doppelganger, protocmp.Transform())
+
+	original.EngineType = protos.ABitOfEnums_ENGINE_TYPE_DIESEL
+	original.VehicleType = protos.VehicleType_VEHICLE_TYPE_PLANE
+
+	assert.Equal(t, protos.ABitOfEnums_ENGINE_TYPE_GAS, doppelganger.EngineType)
+	assert.Equal(t, protos.VehicleType_VEHICLE_TYPE_CAR, doppelganger.VehicleType)
+}

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.netcracker.nrm.api.test.hub.model;
+
+option go_package = "github.com/dgodyna/protoc-gen-resource/pkg/deepcopy/testdata/protos";
+
+message ABitOfEnums {
+
+    EngineType engine_type = 1;
+
+    enum EngineType {
+        ENGINE_TYPE_UNSPECIFIED = 0;
+        ENGINE_TYPE_DIESEL = 1;
+        ENGINE_TYPE_GAS = 2;
+
+    }
+
+    VehicleType vehicle_type = 2 ;
+}
+
+enum VehicleType {
+    VEHICLE_TYPE_UNSPECIFIED = 0;
+    VEHICLE_TYPE_CAR = 1;
+    VEHICLE_TYPE_PLANE = 2;
+}
