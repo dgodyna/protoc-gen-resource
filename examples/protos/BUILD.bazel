@@ -20,6 +20,11 @@ go_proto_library(
         "@io_bazel_rules_go//proto:go_proto",
         "//cmd/protoc-gen-resource:protoc-gen-resource_compiler",
     ],
+    deps = [
+            "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
+            "@io_k8s_apimachinery//pkg/runtime",
+            "@io_k8s_apimachinery//pkg/runtime/schema",
+    ],
     importpath = "github.com/dgodyna/protoc-gen-resource/examples/protos",
     proto = ":protos_proto",
     visibility = ["//visibility:public"],
