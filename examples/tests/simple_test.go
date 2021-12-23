@@ -2,8 +2,8 @@ package tests
 
 import (
 	"github.com/dgodyna/protoc-gen-resource/examples/protos"
-	"gotest.tools/assert"
-	"gotest.tools/assert/cmp"
+	"github.com/stretchr/testify/assert"
+	"google.golang.org/protobuf/testing/protocmp"
 	_ "k8s.io/apimachinery/pkg/apis/meta/v1"
 	_ "k8s.io/apimachinery/pkg/runtime"
 	"testing"
@@ -28,6 +28,12 @@ func TestSimpleDeepcopy(t *testing.T) {
 		BytesType:    []byte("bytes"),
 	}
 
+	// check deepcopy itself
 	doppelganger := original.DeepCopy()
-	assert.Assert(t, cmp.DeepEqual(original, doppelganger), "original != cloned")
+	assert.Equal(t, original, doppelganger, protocmp.Transform())
+
+	// now change the original
+	original.Int32Type = 1
+	assert.NotEqual(t, original, doppelganger, protocmp.Transform())
+
 }
