@@ -30,6 +30,8 @@ go_test(
     ],
     data = [
         "testdata/etalons/simple.pb.deepcopy.go.etalone",
+        "testdata/etalons/optionals.pb.deepcopy.go.etalone",
+        "testdata/protos/optionals.proto_",
         "testdata/protos/simple.proto_",
     ],
     embed = [":resource"],

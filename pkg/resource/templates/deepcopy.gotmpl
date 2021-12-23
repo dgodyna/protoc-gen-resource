@@ -4,6 +4,9 @@ func (in *{{.type}}) DeepCopyInto(out *{{.type}}) {
 	{{- range .scalarTypes }}
     out.{{ . }} = in.{{ . }}
 	{{- end }}
+	{{- range .optionScalarTypes }}
+    *out.{{ . }} = *in.{{ . }}
+	{{- end }}
 	return
 }
 

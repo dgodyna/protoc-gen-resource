@@ -94,4 +94,33 @@ func TestOptionalsDeepcopy(t *testing.T) {
 	doppelganger := original.DeepCopy()
 	assert.Equal(t, original, doppelganger, protocmp.Transform())
 
+	d++
+	f++
+	i32++
+	i64++
+	ui32++
+	ui64++
+	si32++
+	si64++
+	fi32++
+	fi64++
+	sfi32++
+	sfi64++
+	b = false
+	s = "42 " + s
+	bts = []byte(s)
+
+	assert.Equal(t, d, original.DoubleType)
+	assert.Equal(t, float64(42), *doppelganger.DoubleType)
+	assert.Equal(t, float32(42), *doppelganger.FloatType)
+	assert.Equal(t, int32(42), *doppelganger.Int32Type)
+	assert.Equal(t, int64(42), *doppelganger.Int64Type)
+	assert.Equal(t, uint32(42), *doppelganger.Uint32Type)
+	assert.Equal(t, uint64(42), *doppelganger.Uint64Type)
+	assert.Equal(t, int32(42), *doppelganger.Sint32Type)
+	assert.Equal(t, int64(42), *doppelganger.Sint64Type)
+	assert.Equal(t, uint32(42), *doppelganger.Fixed32Type)
+	assert.Equal(t, uint64(42), *doppelganger.Fixed64Type)
+	assert.Equal(t, int32(42), *doppelganger.Sfixed32Type)
+	assert.Equal(t, int64(42), *doppelganger.Sfixed64Type)
 }

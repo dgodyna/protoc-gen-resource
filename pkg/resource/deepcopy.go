@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"github.com/dgodyna/protoc-gen-resource/pkg/generator"
 	"google.golang.org/protobuf/compiler/protogen"
+	"sort"
 )
 
 //go:embed templates/deepcopy.gotmpl
@@ -17,15 +18,28 @@ var deepCopyObjectTmpl string
 
 func deepCopyMessage(message *protogen.Message, sw *generator.SnippetWriter) {
 	var scalarTypes []string
+	var optionScalarTypes []string
 	for _, f := range message.Fields {
 		if f.Desc.Kind().IsValid() {
-			scalarTypes = append(scalarTypes, f.GoName)
+			if f.Desc.HasOptionalKeyword() {
+				optionScalarTypes = append(optionScalarTypes, f.GoName)
+			} else {
+				scalarTypes = append(scalarTypes, f.GoName)
+			}
 		}
 	}
 
+	sort.Slice(scalarTypes, func(i, j int) bool {
+		return scalarTypes[i] > scalarTypes[j]
+	})
+	sort.Slice(optionScalarTypes, func(i, j int) bool {
+		return optionScalarTypes[i] > optionScalarTypes[j]
+	})
+
 	sw.Do(deepCopyTmpl, generator.Args{
-		"scalarTypes": scalarTypes,
-		"type":        message.GoIdent.GoName,
+		"scalarTypes":       scalarTypes,
+		"optionScalarTypes": optionScalarTypes,
+		"type":              message.GoIdent.GoName,
 	})
 }
 

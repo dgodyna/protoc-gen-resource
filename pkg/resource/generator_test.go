@@ -31,6 +31,14 @@ func TestGenerate(t *testing.T) {
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "simple.pb.deepcopy.go.etalone"),
 		},
+		{
+			name: "Optionals",
+			args: args{
+				fileToGenerate: "optionals.proto_",
+				filePath:       []string{filepath.Join("testdata", "protos")},
+			},
+			wantFilePath: filepath.Join("testdata", "etalons", "optionals.pb.deepcopy.go.etalone"),
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -57,6 +65,10 @@ func TestGenerate(t *testing.T) {
 			}
 
 			response := loadResponse(t, tt.args.fileToGenerate, tt.wantFilePath)
+
+			t.Log("\n")
+			t.Log(*resp.File[0].Content)
+			t.Log("\n")
 
 			assert.DeepEqual(t, response, resp, protocmp.Transform())
 		})
