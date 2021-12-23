@@ -11,9 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: bazelbuild/setup-bazelisk@v1
-    - run: |
-        sudo apt install protobuf-compiler
-        bazel test //...
+    - run: bazel test //...
   build:
     runs-on: ubuntu-latest
     steps:
