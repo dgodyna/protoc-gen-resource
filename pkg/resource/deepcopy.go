@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"github.com/dgodyna/protoc-gen-resource/pkg/generator"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"sort"
 )
 
@@ -22,6 +23,11 @@ func deepCopyMessage(message *protogen.Message, sw *generator.SnippetWriter) {
 	for _, f := range message.Fields {
 		if f.Desc.Kind().IsValid() {
 			if f.Desc.HasOptionalKeyword() {
+				// bytes slice is not a pointer
+				if f.Desc.Kind() == protoreflect.BytesKind {
+					scalarTypes = append(scalarTypes, f.GoName)
+					continue
+				}
 				optionScalarTypes = append(optionScalarTypes, f.GoName)
 			} else {
 				scalarTypes = append(scalarTypes, f.GoName)

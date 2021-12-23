@@ -19,6 +19,7 @@ go_library(
     deps = [
         "//pkg/generator",
         "@org_golang_google_protobuf//compiler/protogen",
+        "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )
 
@@ -29,8 +30,8 @@ go_test(
         "gvk_test.go",
     ],
     data = [
-        "testdata/etalons/simple.pb.deepcopy.go.etalone",
         "testdata/etalons/optionals.pb.deepcopy.go.etalone",
+        "testdata/etalons/simple.pb.deepcopy.go.etalone",
         "testdata/protos/optionals.proto_",
         "testdata/protos/simple.proto_",
     ],

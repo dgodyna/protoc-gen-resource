@@ -66,10 +66,6 @@ func TestGenerate(t *testing.T) {
 
 			response := loadResponse(t, tt.args.fileToGenerate, tt.wantFilePath)
 
-			t.Log("\n")
-			t.Log(*resp.File[0].Content)
-			t.Log("\n")
-
 			assert.DeepEqual(t, response, resp, protocmp.Transform())
 		})
 	}

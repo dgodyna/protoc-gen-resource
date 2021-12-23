@@ -110,7 +110,6 @@ func TestOptionalsDeepcopy(t *testing.T) {
 	s = "42 " + s
 	bts = []byte(s)
 
-	assert.Equal(t, d, original.DoubleType)
 	assert.Equal(t, float64(42), *doppelganger.DoubleType)
 	assert.Equal(t, float32(42), *doppelganger.FloatType)
 	assert.Equal(t, int32(42), *doppelganger.Int32Type)
@@ -123,4 +122,7 @@ func TestOptionalsDeepcopy(t *testing.T) {
 	assert.Equal(t, uint64(42), *doppelganger.Fixed64Type)
 	assert.Equal(t, int32(42), *doppelganger.Sfixed32Type)
 	assert.Equal(t, int64(42), *doppelganger.Sfixed64Type)
+	assert.True(t, *doppelganger.BoolType)
+	assert.Equal(t, "the answer to life the universe and everything", *doppelganger.StringType)
+	assert.Equal(t, "the answer", string(doppelganger.BytesType))
 }
