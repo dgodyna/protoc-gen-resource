@@ -25,9 +25,9 @@ go_binary(
 go_proto_compiler(
     name = "protoc-gen-resource_compiler",
     plugin = ":protoc-gen-resource",
-    valid_archive = True,
+    suffix = ".deepcopy.pb.go",
+    valid_archive = False,
     visibility = ["//visibility:public"],
     deps = [
     ],
-    suffix = ".deepcopy.pb.go",
 )

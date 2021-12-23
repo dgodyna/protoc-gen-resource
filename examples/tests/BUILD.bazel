@@ -3,5 +3,11 @@ load("@io_bazel_rules_go//go:def.bzl", "go_test")
 go_test(
     name = "tests_test",
     srcs = ["simple_test.go"],
-    deps = ["//examples/protos"],
+    deps = [
+        "//examples/protos",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
+        "@io_k8s_apimachinery//pkg/runtime",
+        "@tools_gotest//assert",
+        "@tools_gotest//assert/cmp",
+    ],
 )

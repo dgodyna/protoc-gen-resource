@@ -1,6 +1,5 @@
 # gazelle:go_proto_compilers @io_bazel_rules_go//proto:go_proto, //cmd/protoc-gen-resource:protoc-gen-resource_compiler
 
-
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
@@ -15,7 +14,8 @@ go_proto_library(
     name = "protos_go_proto",
     compilers = [
         "@io_bazel_rules_go//proto:go_proto",
-                 "//cmd/protoc-gen-resource:protoc-gen-resource_compiler"],
+        "//cmd/protoc-gen-resource:protoc-gen-resource_compiler",
+    ],
     importpath = "github.com/dgodyna/protoc-gen-resource/examples/protos",
     proto = ":protos_proto",
     visibility = ["//visibility:public"],
@@ -23,7 +23,13 @@ go_proto_library(
 
 go_library(
     name = "protos",
+    srcs = ["imports.go"],
     embed = [":protos_go_proto"],
     importpath = "github.com/dgodyna/protoc-gen-resource/examples/protos",
     visibility = ["//visibility:public"],
+    deps = [
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
+        "@io_k8s_apimachinery//pkg/runtime",
+        "@io_k8s_apimachinery//pkg/runtime/schema",
+    ],
 )
