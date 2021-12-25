@@ -7,15 +7,14 @@ on:
 
 jobs:
   test:
-    runs-on: golang
-    steps:
-    - uses: actions/checkout@v2
-    - run: | go install github.com/bazelbuild/bazelisk@latest
-        bazelist test //...
-  build:
-    runs-on: golang
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: bazelbuild/setup-bazelisk@v1
-    - run: | go install github.com/bazelbuild/bazelisk@latest
-        bazelist build //...
+    - run: bazel test //...
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bazelbuild/setup-bazelisk@v1
+    - run: bazel build //...
