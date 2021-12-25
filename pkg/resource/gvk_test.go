@@ -247,7 +247,7 @@ func Test_extractFromPackage(t *testing.T) {
 					Package: &tt.args.packageStr,
 				},
 			}
-			got, got1 := extractFromPackage(f, tt.args.m)
+			got, got1 := extractFromPackage(*f.Proto.Package, tt.args.m)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("extractFromPackage() got = %v, want %v", got, tt.want)
 			}

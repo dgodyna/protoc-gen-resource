@@ -3,22 +3,23 @@ package resource
 import (
 	_ "embed"
 	"fmt"
-	"github.com/dgodyna/protoc-gen-resource/pkg/generator"
+	"github.com/dgodyna/protoc-gen-resource/pkg/templates"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"sort"
 )
 
-//go:embed templates/deepcopy.gotmpl
-var deepCopyTmpl string
-
 //go:embed templates/deepcopy_into.gotmpl
 var deepCopyIntoTmpl string
+
+//go:embed templates/deepcopy.gotmpl
+var deepCopyTmpl string
 
 //go:embed templates/deepcopy_object.gotmpl
 var deepCopyObjectTmpl string
 
-func deepCopyMessage(message *protogen.Message, sw *generator.SnippetWriter) {
+// deepCopyInto generate DeepCopyInto function for provided message.
+func (g *generator) deepCopyInto(message *protogen.Message) {
 	var scalarTypes []string
 	var optionScalarTypes []string
 	var enumTypes []string
@@ -57,7 +58,7 @@ func deepCopyMessage(message *protogen.Message, sw *generator.SnippetWriter) {
 		return messages[i] > messages[j]
 	})
 
-	sw.Do(deepCopyTmpl, generator.Args{
+	g.sw.Do(deepCopyIntoTmpl, templates.Args{
 		"scalarTypes":       scalarTypes,
 		"optionScalarTypes": optionScalarTypes,
 		"enumTypes":         enumTypes,
@@ -66,14 +67,16 @@ func deepCopyMessage(message *protogen.Message, sw *generator.SnippetWriter) {
 	})
 }
 
-func deepCopyInto(message *protogen.Message, sw *generator.SnippetWriter) {
-	sw.Do(deepCopyIntoTmpl, generator.Args{
+// deepCopy generate DeepCopy function for provided message.
+func (g *generator) deepCopy(message *protogen.Message) {
+	g.sw.Do(deepCopyTmpl, templates.Args{
 		"type": message.GoIdent.GoName,
 	})
 }
 
-func deepCopyObject(message *protogen.Message, sw *generator.SnippetWriter) {
-	sw.Do(deepCopyObjectTmpl, generator.Args{
+// deepCopyObject generate DeepCopyObject function for provided message.
+func (g *generator) deepCopyObject(message *protogen.Message) {
+	g.sw.Do(deepCopyObjectTmpl, templates.Args{
 		"type": message.GoIdent.GoName,
 	})
 }

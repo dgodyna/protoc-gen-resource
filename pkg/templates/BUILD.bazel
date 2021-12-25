@@ -1,8 +1,8 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "generator",
+    name = "templates",
     srcs = ["snippet_writer.go"],
-    importpath = "github.com/dgodyna/protoc-gen-resource/pkg/generator",
+    importpath = "github.com/dgodyna/protoc-gen-resource/pkg/templates",
     visibility = ["//visibility:public"],
 )
