@@ -14,12 +14,12 @@ func (in *{{.type}}) DeepCopyInto(out *{{.type}}) {
 	out.{{ . }} = in.{{ . }}
 	{{- end }}
 	{{- range .messages }}
-	if int.{{ . }} != nil {
-        _, ok := int.{{ . }}.(runtime.Object)
+	if in.{{ . }} != nil {
+        _, ok := interface{}(in.{{ . }}).(runtime.Object)
         if ok {
-          out.{{ . }} = in.DeepCopy()
+          out.{{ . }} = in.{{ . }}.DeepCopy()
         } else {
-          panic(fmt.Errorf("message '{{$type}}' does not implement runtime.Object"))
+          panic(fmt.Errorf("message field '{{$type}}{{ . }}' does not implement runtime.Object"))
         }
 	}
 	{{- end }}

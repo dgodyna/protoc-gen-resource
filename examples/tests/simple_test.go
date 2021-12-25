@@ -143,3 +143,35 @@ func TestEnumsDeepcopy(t *testing.T) {
 	assert.Equal(t, protos.ABitOfEnums_ENGINE_TYPE_GAS, doppelganger.EngineType)
 	assert.Equal(t, protos.VehicleType_VEHICLE_TYPE_CAR, doppelganger.VehicleType)
 }
+
+func TestMessagesDeepcopy(t *testing.T) {
+	original := &protos.ABitOfMessages{
+		First: &protos.AnotherM{
+			F1: "first",
+			F2: "second",
+		},
+		Second: &protos.ABitOfMessages_Sub{
+			I1: 42,
+			I2: 42,
+		},
+	}
+
+	// check deepcopy itself
+	doppelganger := original.DeepCopy()
+	assert.Equal(t, original, doppelganger, protocmp.Transform())
+
+	original.First = &protos.AnotherM{
+		F1: "third",
+		F2: "fourth",
+	}
+	original.Second = nil
+
+	assert.Equal(t, &protos.AnotherM{
+		F1: "first",
+		F2: "second",
+	}, doppelganger.First, protocmp.Transform())
+	assert.Equal(t, &protos.ABitOfMessages_Sub{
+		I1: 42,
+		I2: 42,
+	}, doppelganger.Second, protocmp.Transform())
+}
