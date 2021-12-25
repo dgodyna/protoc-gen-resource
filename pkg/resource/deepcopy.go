@@ -22,24 +22,25 @@ func deepCopyMessage(message *protogen.Message, sw *generator.SnippetWriter) {
 	var scalarTypes []string
 	var optionScalarTypes []string
 	var enumTypes []string
+	var messages []string
 	for _, f := range message.Fields {
-		if f.Desc.Kind() == protoreflect.EnumKind {
+		switch f.Desc.Kind() {
+		case protoreflect.EnumKind:
 			enumTypes = append(enumTypes, f.GoName)
-		} else if f.Desc.Kind().IsValid() {
+		case protoreflect.BytesKind:
+			scalarTypes = append(scalarTypes, f.GoName)
+		case protoreflect.MessageKind:
+			messages = append(messages, f.GoName)
+		case protoreflect.BoolKind, protoreflect.Int32Kind, protoreflect.Sint32Kind, protoreflect.Uint32Kind,
+			protoreflect.Int64Kind, protoreflect.Sint64Kind, protoreflect.Uint64Kind, protoreflect.Sfixed32Kind, protoreflect.Fixed32Kind, protoreflect.FloatKind, protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind,
+			protoreflect.DoubleKind, protoreflect.StringKind:
 			if f.Desc.HasOptionalKeyword() {
-				// bytes slice is not a pointer
-				if f.Desc.Kind() == protoreflect.BytesKind {
-					scalarTypes = append(scalarTypes, f.GoName)
-					continue
-				}
 				optionScalarTypes = append(optionScalarTypes, f.GoName)
 			} else {
 				scalarTypes = append(scalarTypes, f.GoName)
 			}
-		} else if f.Desc.Kind() == protoreflect.EnumKind {
-
-			panic(fmt.Sprintf("%+v\n", f.Enum))
-
+		default:
+			panic(fmt.Errorf("kind '%s' not supported yet", f.Desc.Kind()))
 		}
 	}
 
@@ -52,11 +53,15 @@ func deepCopyMessage(message *protogen.Message, sw *generator.SnippetWriter) {
 	sort.Slice(enumTypes, func(i, j int) bool {
 		return enumTypes[i] > enumTypes[j]
 	})
+	sort.Slice(messages, func(i, j int) bool {
+		return messages[i] > messages[j]
+	})
 
 	sw.Do(deepCopyTmpl, generator.Args{
 		"scalarTypes":       scalarTypes,
 		"optionScalarTypes": optionScalarTypes,
 		"enumTypes":         enumTypes,
+		"messages":          messages,
 		"type":              message.GoIdent.GoName,
 	})
 }

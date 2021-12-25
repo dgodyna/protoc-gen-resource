@@ -47,6 +47,17 @@ func TestGenerate(t *testing.T) {
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "enums.pb.deepcopy.go.etalone"),
 		},
+		{
+			name: "Messages",
+			args: args{
+				//descriptorPath: filepath.Join("testdata", "descriptors", "messages.descriptor"),
+				descriptorPath: "/Users/dgodyna/work/My/protoc-gen-resource/pkg/resource/testdata/descriptors/messages.descriptor",
+				fileToGenerate: "messages.proto",
+			},
+			wantErr: false,
+			//wantFilePath: filepath.Join("testdata", "etalons", "messages.pb.deepcopy.go.etalone"),
+			wantFilePath: "/Users/dgodyna/work/My/protoc-gen-resource/pkg/resource/testdata/etalons/messages.pb.deepcopy.go.etalone",
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -54,8 +65,8 @@ func TestGenerate(t *testing.T) {
 
 			req, err := protoc.ReadCodeGenerationRequest(tt.args.descriptorPath, tt.args.fileToGenerate)
 
-			assert.Assert(t, req != nil)
 			assert.NilError(t, err, "unable to create code generation request")
+			assert.Assert(t, req != nil, "codegeneration request is nil")
 
 			gen, err := protogen.Options{}.New(req)
 			assert.NilError(t, err, "unable to create protogen plugin")

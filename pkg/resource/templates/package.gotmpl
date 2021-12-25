@@ -3,8 +3,11 @@
 package {{.package}}
 
 import (
+    "fmt"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
     "k8s.io/apimachinery/pkg/runtime/schema"
 )
 
+// to resolve imports
+var _ fmt.Formatter
