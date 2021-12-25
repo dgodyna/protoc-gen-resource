@@ -3,10 +3,14 @@
 package protos
 
 import (
+	"fmt"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
+
+// to resolve imports
+var _ fmt.Formatter
 
 func (*ABitOfScalars) GetResourceGroup() string {
 	return "test.api.nrm.netcracker.com"

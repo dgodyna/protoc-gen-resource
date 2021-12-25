@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.netcracker.nrm.api.test.hub.model;
+
+option go_package = "github.com/dgodyna/protoc-gen-resource/pkg/deepcopy/testdata/protos";
+
+message ABitOfMessages {
+
+    AnotherM first = 1;
+    Sub second = 2;
+
+    message Sub {
+        int64 i1 = 1;
+        int64 i2 = 2;
+    }
+
+}
+
+message AnotherM {
+    string f1 = 1;
+    string f2 = 2;
+}
