@@ -12,6 +12,7 @@ proto_library(
         "optionals.proto",
         "repeated_scalars.proto",
         "repeated_enums.proto",
+        "repeated_messages.proto",
         "simple.proto",
     ],
     visibility = ["//visibility:public"],
