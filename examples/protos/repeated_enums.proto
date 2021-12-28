@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.netcracker.nrm.api.test.hub.model;
+
+option go_package = "github.com/dgodyna/protoc-gen-resource/pkg/deepcopy/testdata/protos";
+
+
+message ABitOfRepeatedEnums {
+    repeated EngineType engine_type = 1;
+    enum EngineType {
+        ENGINE_TYPE_UNSPECIFIED = 0;
+        ENGINE_TYPE_DIESEL = 1;
+        ENGINE_TYPE_GAS = 2;
+    }
+}

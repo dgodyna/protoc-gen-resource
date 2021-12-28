@@ -58,8 +58,7 @@ func (g *generator) doList(field *protogen.Field) {
 		protoreflect.DoubleKind, protoreflect.StringKind, protoreflect.BytesKind:
 		g.doScalarList(field)
 	case protoreflect.EnumKind:
-		panic("not implemented")
-		//g.doEnum(field)
+		g.doEnumList(field)
 	case protoreflect.MessageKind:
 		panic("not implemented")
 		//g.doMessage(field)
@@ -114,6 +113,17 @@ func (g *generator) doScalarList(field *protogen.Field) {
 if in.{{ .field.GoName }} != nil {
 	in, out := &in.{{ .field.GoName }}, &out.{{ .field.GoName }}
 	*out = make({{ .field | GoType }}, len(*in))
+	copy(*out, *in)
+}
+`, templates.Args{"field": field})
+}
+
+// doScalarList process repeatable scalars. Repeatable scalars are not optional, so no need to check it.
+func (g *generator) doEnumList(field *protogen.Field) {
+	g.sw.Do(`
+if in.{{ .field.GoName }} != nil {
+	in, out := &in.{{ .field.GoName }}, &out.{{ .field.GoName }}
+	*out = make([]{{ .field.Enum.GoIdent.GoName }}, len(*in))
 	copy(*out, *in)
 }
 `, templates.Args{"field": field})

@@ -66,6 +66,14 @@ func TestGenerate(t *testing.T) {
 			},
 			wantFilePath: filepath.Join("testdata", "etalons", "repeated_scalars.pb.deepcopy.go.etalone"),
 		},
+		{
+			name: "Repeated Enums",
+			args: args{
+				descriptorPath: filepath.Join("testdata", "descriptors", "repeated_enums.descriptor"),
+				fileToGenerate: "repeated_enums.proto",
+			},
+			wantFilePath: filepath.Join("testdata", "etalons", "repeated_enums.pb.deepcopy.go.etalone"),
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
