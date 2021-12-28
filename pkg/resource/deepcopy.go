@@ -60,8 +60,7 @@ func (g *generator) doList(field *protogen.Field) {
 	case protoreflect.EnumKind:
 		g.doEnumList(field)
 	case protoreflect.MessageKind:
-		panic("not implemented")
-		//g.doMessage(field)
+		g.doMessageList(field)
 	default:
 		panic(fmt.Errorf("kind '%s' not supported yet", field.Desc.Kind()))
 	}
@@ -116,6 +115,26 @@ if in.{{ .field.GoName }} != nil {
 	copy(*out, *in)
 }
 `, templates.Args{"field": field})
+}
+
+func (g *generator) doMessageList(field *protogen.Field) {
+
+	g.sw.Do(`
+	inn, outt := &in.{{ .field.GoName }}, &out.{{ .field.GoName }}
+	*outt = make([]*{{ .field.Message.GoIdent.GoName }}, len(*inn))
+	for i := range *inn {
+		if (*inn)[i] != nil {
+			in, out := &(*inn)[i], &(*outt)[i]
+			_, ok := interface{}(*in).(runtime.Object)
+			if ok {
+            	*out = new({{ .field.Message.GoIdent.GoName }})
+				(*in).DeepCopyInto(*out)
+			} else {
+				panic(fmt.Errorf("message field '{{.message.GoIdent.GoName}}{{ .field.GoName }}' does not implement runtime.Object"))
+			}
+		}            
+	}
+`, templates.Args{"field": field, "message": field.Parent})
 }
 
 // doScalarList process repeatable scalars. Repeatable scalars are not optional, so no need to check it.
