@@ -5,12 +5,12 @@ go_library(
     name = "resource",
     srcs = [
         "deepcopy.go",
+        "funcs.go",
         "generator.go",
         "gvk.go",
     ],
     embedsrcs = [
         "templates/deepcopy.gotmpl",
-        "templates/deepcopy_into.gotmpl",
         "templates/deepcopy_object.gotmpl",
         "templates/gvk.gotmpl",
         "templates/package.gotmpl",

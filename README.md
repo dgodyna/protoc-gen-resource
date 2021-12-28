@@ -18,5 +18,9 @@ Supported proto3 types:
 - [x] messages
 - [ ] 3rd party messages
 - [ ] repeated fields
+    - [x] scalars
+    - [ ] messages
+    - [ ] 3rd party messages
+    - [ ] oneOf
 - [ ] maps
 - [ ] oneOf

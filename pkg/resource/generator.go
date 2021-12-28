@@ -125,9 +125,11 @@ func newGenerator(file *protogen.File) *generator {
 	return &generator{
 		firstPartyMessages: firstPartyMessages,
 		order:              messages,
-		sw:                 templates.NewSnippetWriter(bytes.NewBuffer([]byte{}), "{{", "}}", map[string]interface{}{}),
-		protoPackage:       *file.Proto.Package,
-		goPackage:          string(file.GoPackageName),
+		sw: templates.NewSnippetWriter(bytes.NewBuffer([]byte{}), "{{", "}}", map[string]interface{}{
+			"GoType": GoType,
+		}),
+		protoPackage: *file.Proto.Package,
+		goPackage:    string(file.GoPackageName),
 	}
 }
 
