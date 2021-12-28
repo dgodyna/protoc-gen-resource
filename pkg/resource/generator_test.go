@@ -56,8 +56,15 @@ func TestGenerate(t *testing.T) {
 				descriptorPath: filepath.Join("testdata", "descriptors", "messages.descriptor"),
 				fileToGenerate: "messages.proto",
 			},
-			wantErr:      false,
 			wantFilePath: filepath.Join("testdata", "etalons", "messages.pb.deepcopy.go.etalone"),
+		},
+		{
+			name: "Repeated Scalars",
+			args: args{
+				descriptorPath: filepath.Join("testdata", "descriptors", "repeated_scalars.descriptor"),
+				fileToGenerate: "repeated_scalars.proto",
+			},
+			wantFilePath: filepath.Join("testdata", "etalons", "repeated_scalars.pb.deepcopy.go.etalone"),
 		},
 	}
 	for _, tt := range tests {

@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestSimpleDeepcopy(t *testing.T) {
+func TestSimpleDeepCopy(t *testing.T) {
 	original := &protos.ABitOfScalars{
 		DoubleType:   42,
 		FloatType:    42,
@@ -54,7 +54,7 @@ func TestSimpleDeepcopy(t *testing.T) {
 	assert.Equal(t, []byte("bytes"), doppelganger.BytesType)
 }
 
-func TestOptionalsDeepcopy(t *testing.T) {
+func TestOptionalsDeepCopy(t *testing.T) {
 
 	var d = float64(42)
 	var f = float32(42)
@@ -127,7 +127,7 @@ func TestOptionalsDeepcopy(t *testing.T) {
 	assert.Equal(t, "the answer", string(doppelganger.BytesType))
 }
 
-func TestEnumsDeepcopy(t *testing.T) {
+func TestEnumsDeepCopy(t *testing.T) {
 
 	original := &protos.ABitOfEnums{
 		EngineType:  protos.ABitOfEnums_ENGINE_TYPE_GAS,
@@ -144,7 +144,7 @@ func TestEnumsDeepcopy(t *testing.T) {
 	assert.Equal(t, protos.VehicleType_VEHICLE_TYPE_CAR, doppelganger.VehicleType)
 }
 
-func TestMessagesDeepcopy(t *testing.T) {
+func TestMessagesDeepCopy(t *testing.T) {
 	original := &protos.ABitOfMessages{
 		First: &protos.AnotherM{
 			F1: "first",
@@ -174,4 +174,49 @@ func TestMessagesDeepcopy(t *testing.T) {
 		I1: 42,
 		I2: 42,
 	}, doppelganger.Second, protocmp.Transform())
+}
+
+func TestRepeatedScalarsDeepCopy(t *testing.T) {
+	original := &protos.ABitOfRepeatedScalars{
+		DoubleType:   []float64{42, 42},
+		FloatType:    []float32{42, 42},
+		Int32Type:    []int32{42, 42},
+		Int64Type:    []int64{42, 42},
+		Uint32Type:   []uint32{42, 42},
+		Uint64Type:   []uint64{42, 42},
+		Sint32Type:   []int32{42, 42},
+		Sint64Type:   []int64{42, 42},
+		Fixed32Type:  []uint32{42, 42},
+		Fixed64Type:  []uint64{42, 42},
+		Sfixed32Type: []int32{42, 42},
+		Sfixed64Type: []int64{42, 42},
+		BoolType:     []bool{true, true, false},
+		StringType:   []string{"a", "bit", "of", "every", "thing"},
+		BytesType:    [][]byte{[]byte("a bit of"), []byte("everything")},
+	}
+
+	// check deepcopy itself
+	doppelganger := original.DeepCopy()
+	assert.Equal(t, original, doppelganger, protocmp.Transform())
+
+	original.Reset()
+	assert.NotEqual(t, original, doppelganger, protocmp.Transform())
+
+	// and check that doppelganger was unchanged
+	assert.NotEqual(t, original, doppelganger, protocmp.Transform())
+	assert.Equal(t, []float64{42, 42}, doppelganger.DoubleType)
+	assert.Equal(t, []float32{42, 42}, doppelganger.FloatType)
+	assert.Equal(t, []int32{42, 42}, doppelganger.Int32Type)
+	assert.Equal(t, []int64{42, 42}, doppelganger.Int64Type)
+	assert.Equal(t, []uint32{42, 42}, doppelganger.Uint32Type)
+	assert.Equal(t, []uint64{42, 42}, doppelganger.Uint64Type)
+	assert.Equal(t, []int32{42, 42}, doppelganger.Sint32Type)
+	assert.Equal(t, []int64{42, 42}, doppelganger.Sint64Type)
+	assert.Equal(t, []uint32{42, 42}, doppelganger.Fixed32Type)
+	assert.Equal(t, []uint64{42, 42}, doppelganger.Fixed64Type)
+	assert.Equal(t, []int32{42, 42}, doppelganger.Sfixed32Type)
+	assert.Equal(t, []int64{42, 42}, doppelganger.Sfixed64Type)
+	assert.Equal(t, []bool{true, true, false}, doppelganger.BoolType)
+	assert.Equal(t, []string{"a", "bit", "of", "every", "thing"}, doppelganger.StringType)
+	assert.Equal(t, [][]byte{[]byte("a bit of"), []byte("everything")}, doppelganger.BytesType)
 }
