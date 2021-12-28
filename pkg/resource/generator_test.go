@@ -53,11 +53,11 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Messages",
 			args: args{
-				descriptorPath: "/Users/dgodyna/work/My/protoc-gen-resource/pkg/resource/testdata/descriptors/messages.descriptor",
+				descriptorPath: filepath.Join("testdata", "descriptors", "messages.descriptor"),
 				fileToGenerate: "messages.proto",
 			},
 			wantErr:      false,
-			wantFilePath: "/Users/dgodyna/work/My/protoc-gen-resource/pkg/resource/testdata/etalons/messages.pb.deepcopy.go.etalone",
+			wantFilePath: filepath.Join("testdata", "etalons", "messages.pb.deepcopy.go.etalone"),
 		},
 	}
 	for _, tt := range tests {
