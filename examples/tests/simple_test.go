@@ -220,3 +220,18 @@ func TestRepeatedScalarsDeepCopy(t *testing.T) {
 	assert.Equal(t, []string{"a", "bit", "of", "every", "thing"}, doppelganger.StringType)
 	assert.Equal(t, [][]byte{[]byte("a bit of"), []byte("everything")}, doppelganger.BytesType)
 }
+
+func TestRepeatedEnumsDeepCopy(t *testing.T) {
+	original := &protos.ABitOfRepeatedEnums{
+		EngineType: []protos.ABitOfRepeatedEnums_EngineType{protos.ABitOfRepeatedEnums_ENGINE_TYPE_GAS, protos.ABitOfRepeatedEnums_ENGINE_TYPE_DIESEL},
+	}
+	// check deepcopy itself
+	doppelganger := original.DeepCopy()
+	assert.Equal(t, original, doppelganger, protocmp.Transform())
+
+	original.Reset()
+	assert.NotEqual(t, original, doppelganger, protocmp.Transform())
+
+	assert.Equal(t, []protos.ABitOfRepeatedEnums_EngineType{protos.ABitOfRepeatedEnums_ENGINE_TYPE_GAS, protos.ABitOfRepeatedEnums_ENGINE_TYPE_DIESEL}, doppelganger.EngineType)
+
+}
