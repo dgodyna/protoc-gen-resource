@@ -8,9 +8,9 @@ proto_library(
     name = "protos_proto",
     srcs = [
         "enums.proto",
+        "messages.proto",
         "optionals.proto",
         "simple.proto",
-        "messages.proto",
     ],
     visibility = ["//visibility:public"],
 )

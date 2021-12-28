@@ -18,7 +18,7 @@ go_library(
     importpath = "github.com/dgodyna/protoc-gen-resource/pkg/resource",
     visibility = ["//visibility:public"],
     deps = [
-        "//pkg/generator",
+        "//pkg/templates",
         "@org_golang_google_protobuf//compiler/protogen",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],

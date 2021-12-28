@@ -3,7 +3,7 @@ package resource
 import (
 	_ "embed"
 	"fmt"
-	"github.com/dgodyna/protoc-gen-resource/pkg/generator"
+	"github.com/dgodyna/protoc-gen-resource/pkg/templates"
 	"google.golang.org/protobuf/compiler/protogen"
 	"strings"
 )
@@ -18,7 +18,7 @@ type gvk struct {
 }
 
 // genGvk get group version & kind of resource from proto message and generate appropriate resource methods.
-func genGvk(f *protogen.File, m *protogen.Message, sw *generator.SnippetWriter) error {
+func (g *generator) genGvk(m *protogen.Message) error {
 	// firstly try to load from comments
 
 	var res *gvk
@@ -31,7 +31,7 @@ func genGvk(f *protogen.File, m *protogen.Message, sw *generator.SnippetWriter) 
 	}
 
 	if !found {
-		res, found = extractFromPackage(f, m)
+		res, found = extractFromPackage(g.protoPackage, m)
 		if !found {
 			return fmt.Errorf("unable to generate GVK resource methods for message '%s' to generate them either add appropriate comments '+protoc-gen-resource:group=GROUP' "+
 				" '+protoc-gen-resource:version=VERSION', '+protoc-gen-resource:kind=KIND' or follow this package naming format <GROUP>.<VERSION> or "+
@@ -39,7 +39,7 @@ func genGvk(f *protogen.File, m *protogen.Message, sw *generator.SnippetWriter) 
 		}
 	}
 
-	sw.Do(gvkTmpl, generator.Args{
+	g.sw.Do(gvkTmpl, templates.Args{
 		"gvk":  res,
 		"type": m.GoIdent.GoName,
 	})
@@ -107,9 +107,7 @@ func extractFromComments(m *protogen.Message) (*gvk, bool, error) {
 // Group will be reversed:
 // com.mycompany.product1.api -> api.product1.mycompany.com
 // If package is not following patterns - return false.
-func extractFromPackage(f *protogen.File, m *protogen.Message) (*gvk, bool) {
-
-	p := *f.Proto.Package
+func extractFromPackage(p string, m *protogen.Message) (*gvk, bool) {
 
 	p = strings.TrimSuffix(p, ".model")
 	p = strings.TrimSuffix(p, ".services")
