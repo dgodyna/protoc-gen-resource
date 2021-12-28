@@ -74,7 +74,7 @@ func (g *generator) generate() error {
 	// process all the messages
 
 	for _, m := range g.order {
-		err := g.doMessage(m)
+		err := g.genMessage(m)
 		if err != nil {
 			return err
 		}
@@ -83,14 +83,23 @@ func (g *generator) generate() error {
 }
 
 // doMessage generate single message
-func (g *generator) doMessage(m *protogen.Message) error {
+func (g *generator) genMessage(m *protogen.Message) error {
 	err := g.genGvk(m)
 	if err != nil {
 		return fmt.Errorf("unable to generate GVK for message '%s' : %w", m.GoIdent.GoName, err)
 	}
-	g.deepCopyInto(m)
+	g.deepCopyIntoMessage(m)
+	if g.sw.Error() != nil {
+		return fmt.Errorf("unable to generate DeepCopyInto function for message '%s' : %w", m.GoIdent.GoName, err)
+	}
 	g.deepCopy(m)
+	if g.sw.Error() != nil {
+		return fmt.Errorf("unable to generate DeepCopy function for message '%s' : %w", m.GoIdent.GoName, err)
+	}
 	g.deepCopyObject(m)
+	if g.sw.Error() != nil {
+		return fmt.Errorf("unable to generate DeepCopyObject function for message '%s' : %w", m.GoIdent.GoName, err)
+	}
 	return nil
 }
 

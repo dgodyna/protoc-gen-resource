@@ -12,6 +12,9 @@ import (
 	"testing"
 )
 
+// Note this test check exact generation syntax and will need update after each change in generation.
+// It's required to don't break existing generation during refactoring and implementation.
+// The test of generation behaviour located at //examples/test.
 func TestGenerate(t *testing.T) {
 	type args struct {
 		descriptorPath string
@@ -50,11 +53,11 @@ func TestGenerate(t *testing.T) {
 		{
 			name: "Messages",
 			args: args{
-				descriptorPath: filepath.Join("testdata", "descriptors", "messages.descriptor"),
+				descriptorPath: "/Users/dgodyna/work/My/protoc-gen-resource/pkg/resource/testdata/descriptors/messages.descriptor",
 				fileToGenerate: "messages.proto",
 			},
 			wantErr:      false,
-			wantFilePath: filepath.Join("testdata", "etalons", "messages.pb.deepcopy.go.etalone"),
+			wantFilePath: "/Users/dgodyna/work/My/protoc-gen-resource/pkg/resource/testdata/etalons/messages.pb.deepcopy.go.etalone",
 		},
 	}
 	for _, tt := range tests {
@@ -74,14 +77,14 @@ func TestGenerate(t *testing.T) {
 				t.Errorf("Generate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			resp := gen.Response()
-			if len(resp.File) > 0 {
-				resp.File[0].Name = nil
+			gotResponse := gen.Response()
+			if len(gotResponse.File) > 0 {
+				gotResponse.File[0].Name = nil
 			}
 
-			response := loadResponse(t, tt.args.fileToGenerate, tt.wantFilePath)
+			expectedResponse := loadResponse(t, tt.args.fileToGenerate, tt.wantFilePath)
 
-			assert.DeepEqual(t, response, resp, protocmp.Transform())
+			assert.DeepEqual(t, expectedResponse, gotResponse, protocmp.Transform())
 		})
 	}
 }
