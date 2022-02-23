@@ -21,3 +21,5 @@ bazel-out
 bazel-protoc-gen-resource
 bazel-testlogs
 .ijwb
+
+user.bazelrc

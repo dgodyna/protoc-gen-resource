@@ -1,2 +1,40 @@
-# uncomment to enable debug
-build --@io_bazel_rules_go//go/config:debug
+# To propagate tags from targets to actions
+build --experimental_allow_tags_propagation
+
+# Protoc: strict warning validations
+build --protocopt=--fatal_warnings
+
+# Build Stamping
+build --workspace_status_command=./build/get_workspace_status.sh
+
+# Do not use volatile env vars, this will make reproduceable protoc build at least
+build --incompatible_strict_action_env
+
+# Workaround for GoStdLib slowness - see https://github.com/bazelbuild/rules_go/issues/2188
+build --modify_execution_info='GoStdlib.*=+no-remote-cache'
+
+# Add execution log
+# build --execution_log_json_file=execution_log.json
+
+# Add build stamping by default
+build --stamp
+
+# Minimize download traffic: do now download if no need to run anything
+test --remote_download_minimal
+run  --remote_download_toplevel
+
+# Make more retries
+build --remote_retries=20
+
+# It feels more responsive this way
+build --show_progress_rate_limit=0.02
+
+# Connection properties - fail as fast as possible, but not too fast
+build --remote_timeout=120s
+
+### This is a user-defined import, you can create a file with name `user.bazelrc` and put it here
+### This file is in .gitignore, so it wouldn't be commited to the git repo
+###
+### Use this to simplify your command-line, and to be able to cleanly use things like
+### `bazel build //...` instead of having to type all the settings for the builds and everything
+try-import %workspace%/user.bazelrc

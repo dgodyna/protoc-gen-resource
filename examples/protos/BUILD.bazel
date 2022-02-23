@@ -10,9 +10,9 @@ proto_library(
         "enums.proto",
         "messages.proto",
         "optionals.proto",
-        "repeated_scalars.proto",
         "repeated_enums.proto",
         "repeated_messages.proto",
+        "repeated_scalars.proto",
         "simple.proto",
     ],
     visibility = ["//visibility:public"],
@@ -24,14 +24,14 @@ go_proto_library(
         "@io_bazel_rules_go//proto:go_proto",
         "//cmd/protoc-gen-resource:protoc-gen-resource_compiler",
     ],
-    deps = [
-            "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
-            "@io_k8s_apimachinery//pkg/runtime",
-            "@io_k8s_apimachinery//pkg/runtime/schema",
-    ],
     importpath = "github.com/dgodyna/protoc-gen-resource/examples/protos",
     proto = ":protos_proto",
     visibility = ["//visibility:public"],
+    deps = [
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:meta",
+        "@io_k8s_apimachinery//pkg/runtime",
+        "@io_k8s_apimachinery//pkg/runtime/schema",
+    ],  #keep
 )
 
 go_library(
